@@ -15,24 +15,26 @@ import br.com.alura.gerenciador.Usuario;
 import br.com.alura.gerenciador.dao.UsuarioDAO;
 
 @WebServlet(urlPatterns="/login")
-public class Login extends HttpServlet {
+public class Login implements Tarefa {
+		
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String email = req.getParameter("email");
-		String senha = req.getParameter("senha");
+	public String executa(HttpServletRequest request, HttpServletResponse response) {
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
 		
 		Usuario usuario = new UsuarioDAO().buscaPorEmailESenha(email, senha);
 		
-		PrintWriter writer = resp.getWriter();
 		
-		if (usuario == null) {
-			writer.println("<html><body>Usuario ou senha inválida!</body></html>");
+		if (usuario == null) {			
+			return "/WEB-INF/paginas/usuarioInvalido.html";
+			
 		} else {
 			
-			HttpSession session = req.getSession();
+			HttpSession session = request.getSession();
 			session.setAttribute("usuarioLogado", usuario);
 			
-			writer.println("<html><body>Usuário logado: " + email + "</body></html>");
+			request.setAttribute("email", usuario.getEmail());
+			return "/WEB-INF/paginas/usuarioLogado.jsp";
 		}
 	}
 }

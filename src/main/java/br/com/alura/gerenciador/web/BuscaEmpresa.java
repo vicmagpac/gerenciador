@@ -16,15 +16,15 @@ import br.com.alura.gerenciador.Empresa;
 import br.com.alura.gerenciador.dao.EmpresaDAO;
 
 @WebServlet(urlPatterns="/busca")
-public class BuscaEmpresa extends HttpServlet {
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class BuscaEmpresa implements Tarefa {
 	
-		String filtro = req.getParameter("filtro");
+	
+	@Override
+	public String executa(HttpServletRequest request, HttpServletResponse response) {
+		String filtro = request.getParameter("filtro");
 		Collection<Empresa> empresas = new EmpresaDAO().buscaPorSimilaridade(filtro);
 		
-		req.setAttribute("empresas", empresas);
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/paginas/buscaEmpresa.jsp");
-		dispatcher.forward(req, resp);
+		request.setAttribute("empresas", empresas);
+		return "/WEB-INF/paginas/buscaEmpresa.jsp";
 	}
 }
